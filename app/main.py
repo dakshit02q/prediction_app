@@ -153,8 +153,7 @@ def main():
         layout = 'wide',
         initial_sidebar_state = 'expanded')
     
-    with open(r"D:\project\DSCS sle\app\style.css") as f:
-        st.markdown("<style>{}</style>".format(f.read()), unsafe_allow_html=True)
+
     
     input_data = add_sidebar()
     #st.write(input_data)
