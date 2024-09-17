@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score, classification_report
 import pickle
 
 def get_clean_data():
-    data = pd.read_csv(r"D:\project\DSCS sle\Cancer_Data.csv")
+    data = pd.read_csv(r"Cancer_Data.csv")
     data = data.drop(['Unnamed: 32', 'id'], axis = 1)
     data['diagnosis'] = data['diagnosis'].map({'M':1, 'B':0})
     print(data.head())
