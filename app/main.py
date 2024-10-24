@@ -3,9 +3,14 @@ import pickle
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+import tensorflow as tf
+#from tensorflow import img_to_array
+from PIL import Image
+from tensorflow import keras
+
 
 def get_clean_data():
-    data = pd.read_csv(r"Cancer_Data.csv")
+    data = pd.read_csv("data.csv")
     data = data.drop(['Unnamed: 32', 'id'], axis = 1)
     data['diagnosis'] = data['diagnosis'].map({'M':1, 'B':0})
     print(data.head())
@@ -144,6 +149,36 @@ def add_predictions(input_data):
     st.write("probability of being malignant: ", model.predict_proba(input_scaled)[0][1])
     st.write("This app is only toabe used by professionals with the reports in hand, do not use this as the standard.")
 
+def cnn_predict(input_xray):
+
+
+    if input_xray is not None:
+        
+        # Display the image with its filename
+        xray_image = Image.open(input_xray)
+        xray_image = xray_image.resize((64,64))
+        img_array = np.array(xray_image)
+        img_array = np.expand_dims(img_array, axis = 0)
+        
+        img_array = img_array / 255.0
+        cnn_model = tf.keras.models.load_model('cnn_model.h5')
+        prediction_cnn = cnn_model.predict(img_array)
+
+        if prediction_cnn[0][0] < 0.5:
+            st.write("There are tumours present")
+        else:
+            st.write("The tumour is absent")
+
+        st.write(f"the probability of tumour being absent: {prediction_cnn[0][0]}")
+        st.write(f"the probability of tumour being present: {prediction_cnn[0][1]}")
+
+        
+def display_image(input_xray):
+    if input_xray is not None:
+        bytes_data = input_xray.read()
+
+        st.image(bytes_data, caption = "Your X-Ray")
+
 
 
 def main():
@@ -170,7 +205,19 @@ def main():
     with col2: 
         add_predictions(input_data)
 
+    with st.container():
+        st.title("X-ray analyser")
 
+    st.text("Note: This is not a definite determiner of the disease, it is trained on previous patterns.")
+    xray = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"] )
+
+
+    if st.button(label = "Analyse"):
+        display_image(xray)
+        st.subheader("Likeliness of a tumour:")
+        cnn_predict(xray)
+        
+    
 
 if __name__ == '__main__':
     main()
