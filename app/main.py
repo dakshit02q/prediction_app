@@ -167,10 +167,10 @@ def cnn_predict(input_xray):
         if prediction_cnn[0][0] < 0.5:
             st.write("There are tumours present")
         else:
-            st.write("The tumour is absent")
+            st.write("No tumor detected.")
 
-        st.write(f"the probability of tumour being absent: {prediction_cnn[0][0]}")
-        st.write(f"the probability of tumour being present: {prediction_cnn[0][1]}")
+        # st.write(f"the probability of tumour being absent: {prediction_cnn[0][0]}")
+        # st.write(f"the probability of tumour being present: {prediction_cnn[0][1]}")
 
         
 def display_image(input_xray):
